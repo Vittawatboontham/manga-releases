@@ -11,14 +11,14 @@ below and never sell data.
 | Data | When | Why | Stored where |
 |------|------|-----|--------------|
 | Anonymous account id | First launch | Back up your library to the cloud and sync it. Without signing in, the account belongs to this install: a reinstall or a new phone starts empty unless you sign in (Google or Microsoft) first | Firebase Auth |
-| Library: bookmarks (series titles and cover links), reading history (series and chapter titles, the page you reached), read/unread chapters, categories, reading status, links between copies of a series from different sources | While you use the app | Cloud backup and cross-device sync | Cloud Firestore, under your account; readable by you in the app and by the project admins in the Firebase console |
-| Google account (name, email, photo) | Only if you sign in with Google | Link your sync data to a recoverable account | Cloud Firestore, under your account |
+| Library: bookmarks (series titles and cover links), reading history (series and chapter titles, the page you reached), read/unread chapters, categories, reading status, links between copies of a series from different sources, and the rest of what syncs per item: your ratings (with any note), the Read next queue, shelves, per-manga reader settings, titles you hid or snoozed, and display titles you chose | While you use the app | Cloud backup and cross-device sync | Cloud Firestore, under your account; readable by you in the app and by the project admins in the Firebase console |
+| Google or Microsoft account (name, email, photo) | Only if you sign in with Google or Microsoft | Link your sync data to a recoverable account | Cloud Firestore, under your account |
 | AniList access token | Only if you connect AniList | Push your reading progress to your AniList list | On this device only |
 | **Approximate location** (a ~5 km grid cell, stored as a geohash; never your exact coordinates) | **On by default** ("Nearby readers"), once you allow Android's location permission; refreshed each launch while on | Not used by any feature yet: matching nearby readers is not built | Cloud Firestore, under your account |
 | **Contacts** (a one-way SHA-256 hash of each phone number; never names, never the numbers themselves) | **On by default** ("Find friends"), once you allow Android's contacts permission; while on, sent again only when your contacts change or you use another account | Not used by any feature yet: matching friends is not built | Cloud Firestore, under your account |
 | Series catalogue: the title, source, slug, cover link and cover image of series the app shows you | As you browse | Keep browsing working when a source site is down | Shared Firestore/Storage catalogue; not tied to your account |
 | Trending counter: a series' title, slug and source, plus a +1, once per series per install when you read it | When you read a series | Build the shared popularity list | Shared Firestore collection; not tied to your account |
-| Bug reports you send: device details, Android and app version, your settings, the titles of up to 40 bookmarks and 15 recent history entries, and your note | Only when you send one | Fix problems | Firestore `bug_reports`, tagged with your anonymous id; read by the project admins |
+| Bug reports you send: device details, Android and app version, your settings, the titles of up to 40 bookmarks and 15 recent history entries, and your note. Crash records the app uploads itself (see below) go to the same place | When you send a report. A crash record is saved on the device when the app crashes and uploaded on a later launch, with no prompt, once the app has an account to send it under | Fix problems | Firestore `bug_reports`, tagged with your anonymous id; read by the project admins |
 
 The contact hashes are **unsalted** SHA-256 of phone numbers. A phone number has few possible values, so
 someone who could read the hashes could recover numbers by guessing them. They are readable only by you
@@ -38,8 +38,9 @@ Incognito, not linking an account in the app, or not signing in on the web keeps
   Firebase id, so a crash can be matched to your synced library if you ask us to look into it. A crash report
   also carries a short trail of coarse app events (screen names, which source site is in use, sync status,
   source failures), never titles or ids, and none of the reading ones while Incognito is on.
-- Crash records the app also uploads to Firestore carry the same device details, version and stack trace,
-  tagged with the same id.
+- Crash records the app also uploads to Firestore by itself, on a later launch and without asking, carry the
+  same device details, version and stack trace plus the error message, tagged with the same id. They are the
+  `bug_reports` rows above.
 
 ### App Check (telling the real app from scripts)
 
@@ -56,14 +57,15 @@ Turn it on under Settings → Privacy, or for this session only. While it is on:
   recommendations; so none of that reaches sync, the trending counter or AniList;
 - opening a series sends no `series_opened` event, and switching to another source does **not** link the two
   automatically (a link is saved and synced with titles);
+- what you search for is not added to your recent searches, and opening a result from a search is not kept as
+  a "Worked before" suggestion; the "For you" rail does not note which titles it showed or which you opened
+  (the search itself still works, and the sites it asks still see the words);
 - the Recents preview is blank on Android 13 and later.
 
 It does **not** cover what you do by hand: bookmarks, chapters you mark read, links you confirm, and downloads
-are saved (and synced) as usual. Searches still go into your recent searches on this device, and which titles
-the "For you" rail showed and which you opened stay in an on-device profile (never synced or backed up).
-Local books you import keep their page on this device. The manga sites and your network can still see what
-you load. "This session only" survives Android freeing the app's memory in the background and ends when you
-end it or close the app and open it again.
+are saved (and synced) as usual. Local books you import keep their page on this device. The manga sites and
+your network can still see what you load and search for. "This session only" survives Android freeing the app's
+memory in the background and ends when you end it or close the app and open it again.
 
 ## Your control
 
@@ -120,8 +122,10 @@ library when you sign in. What differs:
   yours, and no Origin header from your browser; the owner's computer, and the ngrok tunnel in front of it, handle the
   addresses you open and what you search on them. The relay keeps a copy of each source page for up to 10 minutes and sets no
   cookies. go-manga, and the searches, chapter lists and chapter pages of the other five, go straight from your browser to
-  the source, which sees your IP address. Page images, and covers that come from a source, always load straight from the
-  source into your browser; the relay never carries images.
+  the source, which sees your IP address. Page images, and covers that come from a source, load straight from the source
+  into your browser (or from the copy this browser keeps); the relay never carries images. While you read a chapter, the web
+  version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver on), so a source
+  sees requests for pages you may never open.
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
   the same account as the app, so the same library syncs both ways: bookmarks, reading history, read chapters, categories,
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
@@ -133,15 +137,18 @@ library when you sign in. What differs:
 - **Sign out** asks whether to keep or remove this browser's copy of the library, and removes the account session; the App Check
   token stays until the site's data is cleared. "Remove" first sends any change not yet in your account, and does nothing if it
   cannot. "Delete my cloud data" in the app erases what the web wrote too, since both use one account.
-- The web app itself sets no cookies (Google's reCAPTCHA, when loaded, may). Its service worker stores only the app's own files.
+- The web app itself sets no cookies (Google's reCAPTCHA, when loaded, may). Its service worker stores the app's own files and
+  copies of the page images and covers you have seen (about 1,000 at most, the oldest dropped first), and the page lists of the
+  chapters you opened, or that were fetched ahead, are kept for a week, to load faster. "Remove this browser's library", and
+  signing out with "Remove", delete them too.
 
 ## Third parties
 
 Google (Firebase Auth, Firestore, Storage, Analytics, Crashlytics, Remote Config, and App Check with Play Integrity,
 which checks that requests come from this app) receives the data above and the technical data any connection
 carries (IP address). The manga source sites you read from see your IP
-address and the pages you load. AniList sees your progress if you connect it. GitHub sees your IP address
-when the app checks for updates.
+address and the pages you load. AniList sees your progress if you connect it. Microsoft sees the sign-in if you
+sign in with Microsoft. GitHub sees your IP address when the app checks for updates.
 
 ## Contact
 
