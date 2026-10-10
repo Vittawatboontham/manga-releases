@@ -110,9 +110,18 @@ library when you sign in. What differs:
   the host of the web app (the owner's own computer, reached through an ngrok tunnel; ngrok and that computer see your IP address and the pages you request), to Google (Firebase Remote
   Config, to learn about maintenance and paused sources, which sends a Firebase installation id and your IP address; and
   Firebase Storage for cover images, which sees your IP address) and to the manga sites you read from, which see your IP
-  address and the pages you load, as in the app. On phones and in Safari, the page also loads Google's sign-in script
+  address and the pages you load, as in the app (except for the sources read through the relay, described in the next item). On phones and in Safari, the page also loads Google's sign-in script
   (apis.google.com) and a manga-singh-eiei.firebaseapp.com frame as soon as it opens, before you sign in or decide to, so Google
   receives your IP address and the address of the site.
+- **Through the web app's relay:** the web app is served from the owner's own computer. For nano, dark-manga, speed-manga,
+  zen-manga, kingsmanga, whytoon and bully-manga (their lists, searches, series and chapter pages), and for the lists and
+  series pages (covers, genres and status) of up-manga, slow-manga, sing-manga, flash-manga and mangakimi, your browser asks
+  a small program on that computer, the relay, to fetch the page. Those sources then see that computer's IP address, not
+  yours, and no Origin header from your browser; the owner's computer, and the ngrok tunnel in front of it, handle the
+  addresses you open and what you search on them. The relay keeps a copy of each source page for up to 10 minutes and sets no
+  cookies. go-manga, and the searches, chapter lists and chapter pages of the other five, go straight from your browser to
+  the source, which sees your IP address. Page images, and covers that come from a source, always load straight from the
+  source into your browser; the relay never carries images.
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
   the same account as the app, so the same library syncs both ways: bookmarks, reading history, read chapters, categories,
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
