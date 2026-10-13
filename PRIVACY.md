@@ -113,8 +113,8 @@ library when you sign in. What differs:
   Config, to learn about maintenance and paused sources, which sends a Firebase installation id and your IP address; and
   Firebase Storage for cover images, which sees your IP address) and to the manga sites you read from, which see your IP
   address and the pages you load, as in the app (except for the sources read through the relay, described in the next item). On phones and in Safari, the page also loads Google's sign-in script
-  (apis.google.com) and a manga-singh-eiei.firebaseapp.com frame as soon as it opens, before you sign in or decide to, so Google
-  receives your IP address and the address of the site.
+  (apis.google.com) and a manga-singh-eiei.firebaseapp.com frame when you open the Account page (or as soon as it opens, once the
+  browser is signed in), before you sign in or decide to, so Google receives your IP address and the address of the site.
 - **Through the web app's relay:** the web app is served from the owner's server (Amazon Web Services, Sydney). For nano, dark-manga, speed-manga,
   zen-manga, kingsmanga, whytoon and bully-manga (their lists, searches, series and chapter pages), and for the lists and
   series pages (covers, genres and status) of up-manga, slow-manga, sing-manga, flash-manga and mangakimi, your browser asks
@@ -131,7 +131,8 @@ library when you sign in. What differs:
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
   build has a reCAPTCHA key, the page loads Google reCAPTCHA (App Check) before its first request to your account, to prove the
   request comes from the real site; Google receives your IP address and browser details for that. While signed in, the browser
-  also keeps the Firebase account session (account id, name, email and photo link) and an App Check token. The web does not use
+  also keeps the Firebase account session (account id, name, email and photo link) and an App Check token, and the app notes
+  whether the browser is signed in, so it loads sign-in and sync only when they are needed. The web does not use
   contacts, location, analytics or crash reports, and it never writes the links between sources (it reads them to file your
   ratings under the right title).
 - **Sign out** asks whether to keep or remove this browser's copy of the library, and removes the account session; the App Check
