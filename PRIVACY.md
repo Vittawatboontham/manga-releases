@@ -125,7 +125,9 @@ library when you sign in. What differs:
   the source, which sees your IP address. Page images, and covers that come from a source, load straight from the source
   into your browser (or from the copy this browser keeps); the relay never carries images. While you read a chapter, the web
   version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver on), so a source
-  sees requests for pages you may never open.
+  sees requests for pages you may never open. When a title has no cover from its source or from the shared copy, your browser
+  looks the title up on AniList, which receives that title, your IP address and browser details, and from the Origin header
+  that the request comes from this site (no cookies, no Referer).
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
   the same account as the app, so the same library syncs both ways: bookmarks, reading history, read chapters, categories,
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
@@ -140,15 +142,15 @@ library when you sign in. What differs:
   cannot. "Delete my cloud data" in the app erases what the web wrote too, since both use one account.
 - The web app itself sets no cookies (Google's reCAPTCHA, when loaded, may). Its service worker stores the app's own files and
   copies of the page images and covers you have seen (about 1,000 at most, the oldest dropped first), and the page lists of the
-  chapters you opened, or that were fetched ahead, are kept for a week, to load faster. "Remove this browser's library", and
-  signing out with "Remove", delete them too.
+  chapters you opened, or that were fetched ahead, the Browse lists and series pages it showed, and AniList's answer for each
+  title it looked up there are kept for a week, to load faster. "Remove this browser's library", and signing out with "Remove", delete them too.
 
 ## Third parties
 
 Google (Firebase Auth, Firestore, Storage, Analytics, Crashlytics, Remote Config, and App Check with Play Integrity,
 which checks that requests come from this app) receives the data above and the technical data any connection
 carries (IP address). The manga source sites you read from see your IP
-address and the pages you load. AniList sees your progress if you connect it. Microsoft sees the sign-in if you
+address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title. Microsoft sees the sign-in if you
 sign in with Microsoft. GitHub sees your IP address when the app checks for updates.
 
 ## Contact
