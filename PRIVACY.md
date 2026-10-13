@@ -124,8 +124,12 @@ library when you sign in. What differs:
   cookies. go-manga, and the searches, chapter lists and chapter pages of the other five, go straight from your browser to
   the source, which sees your IP address. Page images, and covers that come from a source, load straight from the source
   into your browser (or from the copy this browser keeps); the relay never carries images. While you read a chapter, the web
-  version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver on), so a source
-  sees requests for pages you may never open. When a title has no cover from its source or from the shared copy, your browser
+  version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver or the web's own
+  Save data switch on), so a source sees requests for pages you may never open. Opening Library asks the source of each
+  bookmarked series for its chapter list, to show new chapters: for sources the browser reads itself, at most once an hour
+  per series (once every 6 hours for go-manga) and 20 series a visit; through the relay, at most once every 6 hours per
+  series, 6 series a visit, about 15 a day and not within 5 minutes of the last one, never for series marked Completed or
+  Dropped; and not with Data Saver or Save data on. When a title has no cover from its source or from the shared copy, your browser
   looks the title up on AniList, which receives that title, your IP address and browser details, and from the Origin header
   that the request comes from this site (no cookies, no Referer).
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
@@ -142,8 +146,12 @@ library when you sign in. What differs:
   cannot. "Delete my cloud data" in the app erases what the web wrote too, since both use one account.
 - The web app itself sets no cookies (Google's reCAPTCHA, when loaded, may). Its service worker stores the app's own files and
   copies of the page images and covers you have seen (about 1,000 at most, the oldest dropped first), and the page lists of the
-  chapters you opened, or that were fetched ahead, the Browse lists and series pages it showed, and AniList's answer for each
-  title it looked up there are kept for a week, to load faster. "Remove this browser's library", and signing out with "Remove", delete them too.
+  chapters you opened, or that were fetched ahead, the Browse lists and series pages it showed, AniList's answer for each
+  title it looked up there, the shape of each page image it loaded, and when each bookmarked series was last checked for new
+  chapters (with a count of the day's checks through the relay and the time of the latest) are kept for a week, to load faster. "Remove this browser's library", and signing out with "Remove", delete them
+  too. The Save data switch, and whether the Add to Home Screen prompt was dismissed or the app installed, are kept in the
+  browser as settings and stay until the site's data is cleared. On iPhone and iPad a Home Screen web app has its own
+  storage, separate from Safari's, so the web asks you to sign in first: your library then comes with you.
 
 ## Third parties
 
