@@ -123,7 +123,8 @@ library when you sign in. What differs:
   addresses you open and what you search on them. The relay keeps a copy of each source page for up to 10 minutes and sets no
   cookies. go-manga, and the searches, chapter lists and chapter pages of the other five, go straight from your browser to
   the source, which sees your IP address. Page images, and covers that come from a source, load straight from the source
-  into your browser (or from the copy this browser keeps); the relay never carries images. While you read a chapter, the web
+  into your browser (or from the copy this browser keeps, or from the web app's own copy of the chapter, below); the relay
+  never carries images. While you read a chapter, the web
   version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver or the web's own
   Save data switch on), so a source sees requests for pages you may never open. Opening Library asks the source of each
   bookmarked series for its chapter list, to show new chapters: for sources the browser reads itself, at most once an hour
@@ -132,6 +133,22 @@ library when you sign in. What differs:
   Dropped; and not with Data Saver or Save data on. When a title has no cover from its source or from the shared copy, your browser
   looks the title up on AniList, which receives that title, your IP address and browser details, and from the Origin header
   that the request comes from this site (no cookies, no Referer).
+- **Chapters the web app keeps:** the web app keeps its own copy of the chapters people read on go-manga, up-manga,
+  slow-manga, sing-manga, flash-manga, mangakimi, speed-manga and zen-manga (no other source), with no end date, so they
+  load from that copy the next time anyone opens them. A chapter is copied only once it is a day old and unchanged, and
+  your browser never asks about a series' newest chapter. Before any other chapter loads, your browser asks Amazon
+  CloudFront (AWS's content delivery network, at d1s960a6o055gr.cloudfront.net) whether there is a copy: CloudFront sees
+  your IP address, browser details and which chapter was asked for, and from the browser's Origin header that the
+  request comes from the web app (no cookies, no Referer). If there is a copy, the page images load from CloudFront
+  instead of the source. If there is none, the chapter loads from the source as above, and your browser sends the web
+  app the chapter's id and its post id or its address on the source, for the chapter you open and for the next one when
+  it is fetched ahead (not with the browser's Data Saver or the web's own Save data switch on); the ngrok tunnel carries
+  that request too. The owner's server then reads that chapter from the source itself, more than once: it waits until
+  the chapter is a day old (for speed-manga and zen-manga, until a day after its first read) and reads it again just
+  before it keeps the copy. It downloads the page images the source lists for it, a few at a time, and stores them in a
+  private storage bucket at Amazon Web Services in Sydney, with nothing that says who read them. A chapter whose source
+  or image server refuses the owner's server is not copied, and is read from the source as before. If a copied chapter
+  looks wrong, "Pages look wrong? Load from the source" in the reader's menu reads it from its source instead.
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
   the same account as the app, so the same library syncs both ways: bookmarks, reading history, read chapters, categories,
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
@@ -158,7 +175,7 @@ library when you sign in. What differs:
 Google (Firebase Auth, Firestore, Storage, Analytics, Crashlytics, Remote Config, and App Check with Play Integrity,
 which checks that requests come from this app) receives the data above and the technical data any connection
 carries (IP address). The manga source sites you read from see your IP
-address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title. Microsoft sees the sign-in if you
+address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title. Amazon Web Services runs the web app's server and, through CloudFront, sees your IP address, browser details and which chapter the web version looks up in its own copy of chapters. Microsoft sees the sign-in if you
 sign in with Microsoft. GitHub sees your IP address when the app checks for updates.
 
 ## Contact
