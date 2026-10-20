@@ -134,21 +134,22 @@ library when you sign in. What differs:
   looks the title up on AniList, which receives that title, your IP address and browser details, and from the Origin header
   that the request comes from this site (no cookies, no Referer).
 - **Chapters the web app keeps:** the web app keeps its own copy of the chapters people read on go-manga, up-manga,
-  slow-manga, sing-manga, flash-manga, mangakimi, speed-manga and zen-manga (no other source), with no end date, so they
-  load from that copy the next time anyone opens them. A chapter is copied only once it is a day old and unchanged, and
-  your browser never asks about a series' newest chapter. Before any other chapter loads, your browser asks Amazon
-  CloudFront (AWS's content delivery network, at d1s960a6o055gr.cloudfront.net) whether there is a copy: CloudFront sees
-  your IP address, browser details and which chapter was asked for, and from the browser's Origin header that the
-  request comes from the web app (no cookies, no Referer). If there is a copy, the page images load from CloudFront
-  instead of the source. If there is none, the chapter loads from the source as above, and your browser sends the web
-  app the chapter's id and its post id or its address on the source, for the chapter you open and for the next one when
-  it is fetched ahead (not with the browser's Data Saver or the web's own Save data switch on); the ngrok tunnel carries
-  that request too. The owner's server then reads that chapter from the source itself, more than once: it waits until
-  the chapter is a day old (for speed-manga and zen-manga, until a day after its first read) and reads it again just
-  before it keeps the copy. It downloads the page images the source lists for it, a few at a time, and stores them in a
-  private storage bucket at Amazon Web Services in Sydney, with nothing that says who read them. A chapter whose source
-  or image server refuses the owner's server is not copied, and is read from the source as before. If a copied chapter
-  looks wrong, "Pages look wrong? Load from the source" in the reader's menu reads it from its source instead.
+  slow-manga, sing-manga, flash-manga, mangakimi, speed-manga, zen-manga, dark-manga, nano-manga, kingsmanga and
+  bully-manga (no other source), with no end date, so they load from that copy the next time anyone opens them. A
+  chapter is copied only once it is a day old and unchanged, and your browser never asks about a series' newest chapter.
+  Before any other chapter loads, your browser asks Amazon CloudFront (AWS's content delivery network, at
+  d1s960a6o055gr.cloudfront.net) whether there is a copy: CloudFront sees your IP address, browser details and which
+  chapter was asked for, and from the browser's Origin header that the request comes from the web app (no cookies, no
+  Referer). If there is a copy, the page images load from CloudFront instead of the source. If there is none, the
+  chapter loads from the source as above, and your browser sends the web app the chapter's id and its post id or its
+  address on the source, for the chapter you open and for the next one when it is fetched ahead (not with the browser's
+  Data Saver or the web's own Save data switch on); the ngrok tunnel carries that request too. The owner's server then
+  reads that chapter from the source itself, more than once: it waits until the chapter is a day old (for speed-manga,
+  zen-manga, dark-manga, nano-manga, kingsmanga and bully-manga, until a day after its first read) and reads it again
+  just before it keeps the copy. It downloads the page images the source lists for it, a few at a time, and stores them
+  in a private storage bucket at Amazon Web Services in Sydney, with nothing that says who read them. A chapter whose
+  source or image server refuses the owner's server is not copied, and is read from the source as before. If a copied
+  chapter looks wrong, "Pages look wrong? Load from the source" in the reader's menu reads it from its source instead.
 - **Signed in with Google or Microsoft** (the same providers as the app; the web never creates an anonymous account): it uses
   the same account as the app, so the same library syncs both ways: bookmarks, reading history, read chapters, categories,
   reading status, ratings and notes, Read next, shelves, per-manga reader settings, hidden titles and display titles. When the
