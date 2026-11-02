@@ -116,14 +116,14 @@ library when you sign in. What differs:
   (apis.google.com) and a manga-singh-eiei.firebaseapp.com frame when you open the Account page (or as soon as it opens, once the
   browser is signed in), before you sign in or decide to, so Google receives your IP address and the address of the site.
 - **Through the web app's relay:** the web app is served from the owner's server (Amazon Web Services, Sydney). For nano, dark-manga, speed-manga,
-  zen-manga, kingsmanga, whytoon and bully-manga (their lists, searches, series and chapter pages), and for the lists and
+  zen-manga, kingsmanga, whytoon, bully-manga and manga-lc (their lists, searches, series and chapter pages), and for the lists and
   series pages (covers, genres and status) of up-manga, slow-manga, sing-manga, flash-manga and mangakimi, your browser asks
   a small program on that server, the relay, to fetch the page. Those sources then see that server's IP address (an AWS
   address), not yours, and no Origin header from your browser; the owner's server, and the ngrok tunnel in front of it, handle the
   addresses you open and what you search on them. The relay keeps a copy of each source page for up to 10 minutes and sets no
   cookies. go-manga, and the searches, chapter lists and chapter pages of the other five, go straight from your browser to
   the source, which sees your IP address. Page images, and covers that come from a source, load straight from the source
-  into your browser (or from the copy this browser keeps, or from the web app's own copy of the chapter, below); the relay
+  (or the image host it links to) into your browser (or from the copy this browser keeps, or from the web app's own copy of the chapter, below); the relay
   never carries images. While you read a chapter, the web
   version also downloads the rest of it and the next chapter in advance (not with the browser's Data Saver or the web's own
   Save data switch on), so a source sees requests for pages you may never open. Opening Library asks the source of each
