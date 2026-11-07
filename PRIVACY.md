@@ -1,6 +1,6 @@
 # Privacy Policy — Singh Manga eiei
 
-_Last updated: 2026-10-10_
+_Last updated: 2026-11-07_
 
 Singh Manga eiei is a free, sideloaded manga reader. This describes what the app collects, why,
 who can read it, and how to turn it off or erase it. We collect the minimum needed for the features
@@ -19,6 +19,7 @@ below and never sell data.
 | Series catalogue: the title, source, slug, cover link and cover image of series the app shows you | As you browse | Keep browsing working when a source site is down | Shared Firestore/Storage catalogue; not tied to your account |
 | Trending counter: a series' title, slug and source, plus a +1, once per series per install when you read it | When you read a series | Build the shared popularity list | Shared Firestore collection; not tied to your account |
 | Bug reports you send: device details, Android and app version, your settings, the titles of up to 40 bookmarks and 15 recent history entries, and your note. Crash records the app uploads itself (see below) go to the same place | When you send a report. A crash record is saved on the device when the app crashes and uploaded on a later launch, with no prompt, once the app has an account to send it under | Fix problems | Firestore `bug_reports`, tagged with your anonymous id; read by the project admins |
+| Page images for cloud AI preparation: the original JPEG/PNG/WebP bytes of a page, the target width and AI strength (never source links or cookies) | Only when you turn on **Prepare AI copies in cloud** together with **Enhance pages (AI)** or **Enhance downloaded chapters (AI)**, and never while Incognito is on | Prepare a sharper copy of low-resolution pages on the owner's server instead of this phone's processor/GPU | Owner's server (Amazon Web Services, Sydney, reached through the ngrok tunnel), keyed privately to your Firebase account id and deleted automatically within 24 hours (or sooner when **Delete my cloud data** can reach the server) |
 
 The contact hashes are **unsalted** SHA-256 of phone numbers. A phone number has few possible values, so
 someone who could read the hashes could recover numbers by guessing them. They are readable only by you
@@ -60,7 +61,8 @@ Turn it on under Settings → Privacy, or for this session only. While it is on:
 - what you search for is not added to your recent searches, and opening a result from a search is not kept as
   a "Worked before" suggestion; the "For you" rail does not note which titles it showed or which you opened
   (the search itself still works, and the sites it asks still see the words);
-- the Recents preview is blank on Android 13 and later.
+- the Recents preview is blank on Android 13 and later;
+- **Prepare AI copies in cloud** uploads no page images while Incognito is on.
 
 It does **not** cover what you do by hand: bookmarks, chapters you mark read, links you confirm, and downloads
 are saved (and synced) as usual. Local books you import keep their page on this device. The manga sites and
@@ -80,7 +82,7 @@ memory in the background and ends when you end it or close the app and open it a
   **not** restored from a backup: a restore leaves this device's switches as they are.
 - **Sign out** (Settings → Account) asks whether to keep or remove this device's library. If you remove it,
   the library is cleared from this device and nothing from the old session syncs to the new one.
-- **Delete my cloud data** (Settings → Account) erases your synced data and your account. Deleting the app
+- **Delete my cloud data** (Settings → Account) erases your synced data (including synced NekoPost collections), asks the owner's server to clear any cloud-prepared AI page copies held under your account (if the server is offline or rate-limited, remaining copies still expire within 24 hours), and deletes your account. Deleting the app
   removes everything on the device.
 - The shared catalogue and trending counters are not tied to your account, so they cannot be erased per user.
 
@@ -177,7 +179,7 @@ Google (Firebase Auth, Firestore, Storage, Analytics, Crashlytics, Remote Config
 which checks that requests come from this app) receives the data above and the technical data any connection
 carries (IP address). The manga source sites you read from see your IP
 address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title. Amazon Web Services runs the web app's server and, through CloudFront, sees your IP address, browser details and which chapter the web version looks up in its own copy of chapters. Microsoft sees the sign-in if you
-sign in with Microsoft. GitHub sees your IP address when the app checks for updates.
+sign in with Microsoft. GitHub sees your IP address when the app checks for updates or when you first download the 1.1 MB Thai recognition model in **Read text in a region** (`raw.githubusercontent.com`; recognition itself runs on this device and never uploads page images or recognized text). When you turn on **Prepare AI copies in cloud**, the ngrok tunnel and the owner's server in Sydney receive the page image bytes you ask it to prepare under your Firebase account token.
 
 ## Contact
 
