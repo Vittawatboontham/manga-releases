@@ -118,7 +118,7 @@ library when you sign in. What differs:
   (apis.google.com) and a manga-singh-eiei.firebaseapp.com frame when you open the Account page (or as soon as it opens, once the
   browser is signed in), before you sign in or decide to, so Google receives your IP address and the address of the site.
 - **Through the web app's relay:** the web app is served from the owner's server (Amazon Web Services, Sydney). For nano, dark-manga, speed-manga,
-  zen-manga, kingsmanga, whytoon, bully-manga and manga-lc (their lists, searches, series and chapter pages), and for the lists and
+  zen-manga, kingsmanga, whytoon, bully-manga, manga-lc, oremanga and niceoppai (their lists, searches, series and chapter pages), and for the lists and
   series pages (covers, genres and status) of up-manga, slow-manga, sing-manga, flash-manga and mangakimi, your browser asks
   a small program on that server, the relay, to fetch the page. Those sources then see that server's IP address (an AWS
   address), not yours, and no Origin header from your browser; the owner's server, and the ngrok tunnel in front of it, handle the
@@ -169,8 +169,9 @@ library when you sign in. What differs:
   chapters you opened, or that were fetched ahead, the Browse lists and series pages it showed, AniList's answer for each
   title it looked up there, the shape of each page image it loaded, and when each bookmarked series was last checked for new
   chapters (with a count of the day's checks through the relay and the time of the latest) are kept for a week, to load faster. "Remove this browser's library", and signing out with "Remove", delete them
-  too. The Save data switch, and whether the Add to Home Screen prompt was dismissed or the app installed, are kept in the
-  browser as settings and stay until the site's data is cleared. On iPhone and iPad a Home Screen web app has its own
+  too. The Save data switch, the Library's and Browse's sort, what the manga cards show (Manga cards), and whether the Add to
+  Home Screen prompt was dismissed or the app installed, are kept in the browser as settings and stay until the site's data is
+  cleared. Your rows (the Your rows page) are kept in this browser only, never synced, and are removed with the library. On iPhone and iPad a Home Screen web app has its own
   storage, separate from Safari's, so the web asks you to sign in first: your library then comes with you.
 
 ## Third parties
@@ -178,7 +179,7 @@ library when you sign in. What differs:
 Google (Firebase Auth, Firestore, Storage, Analytics, Crashlytics, Remote Config, and App Check with Play Integrity,
 which checks that requests come from this app) receives the data above and the technical data any connection
 carries (IP address). The manga source sites you read from see your IP
-address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title. Amazon Web Services runs the web app's server and, through CloudFront, sees your IP address, browser details and which chapter the web version looks up in its own copy of chapters. Microsoft sees the sign-in if you
+address and the pages you load. AniList sees your progress if you connect it, and the web version looks some covers up there by title, and the release year and score of the titles a Release year or AniList score sort or card detail needs while you have one chosen. Amazon Web Services runs the web app's server and, through CloudFront, sees your IP address, browser details and which chapter the web version looks up in its own copy of chapters. Microsoft sees the sign-in if you
 sign in with Microsoft. GitHub sees your IP address when the app checks for updates or when you first download the 1.1 MB Thai recognition model in **Read text in a region** (`raw.githubusercontent.com`; recognition itself runs on this device and never uploads page images or recognized text). When you turn on **Prepare AI copies in cloud**, the ngrok tunnel and the owner's server in Sydney receive the page image bytes you ask it to prepare under your Firebase account token.
 
 ## Contact
